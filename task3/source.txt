@@ -1,0 +1,34 @@
+@startuml
+actor User
+participant Client
+participant Server
+database DB
+
+autonumber
+activate User
+
+User -> Client: Enter search query
+activate Client
+
+Client -> Server: Make REST request with HTTP GET
+activate Server
+
+Server -> Server: Validate Request
+
+alt Request is valid
+  Server -> DB: Make database query
+  activate DB
+  DB -> Server: Send query results
+  deactivate DB
+  Server -> Server: Process data
+  Server -> Client: Send processed data
+  Client -> User: Present data
+else Validation failure
+  Server -> Client: Send error
+  deactivate Server
+  Client -> User: Show error message
+  deactivate Client
+end
+
+deactivate User
+@enduml
